@@ -1,7 +1,7 @@
-package com.eduardocastro.ecom_application.infrastructure.repository.mapper;
+package com.eduardocastro.ecom_application.infrastructure.persistence.mapper;
 
-import com.eduardocastro.ecom_application.domain.model.User;
-import com.eduardocastro.ecom_application.infrastructure.repository.jpa.UserJpaEntity;
+import com.eduardocastro.ecom_application.domain.entity.User;
+import com.eduardocastro.ecom_application.infrastructure.persistence.jpa.UserJpaEntity;
 
 public class UserJpaMapper {
 

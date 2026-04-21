@@ -1,4 +1,4 @@
-package com.eduardocastro.ecom_application.infrastructure.repository.jpa;
+package com.eduardocastro.ecom_application.infrastructure.persistence.jpa;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,21 +15,21 @@ public class UserJpaEntity {
     @Id
     private UUID id;
 
-    @Column(name="first_name", nullable=false)
+    @Column(name = "first_name", nullable = false)
     private String firstName;
 
-    @Column(name="last_name", nullable=false)
+    @Column(name = "last_name", nullable = false)
     private String lastName;
 
-    @Column(name="created_at")
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @Column(name="updated_at")
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
     public UserJpaEntity() {}
 
-    public UserJpaEntity(UUID id, String firstName, String lastName,  LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public UserJpaEntity(UUID id, String firstName, String lastName, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;

@@ -1,4 +1,4 @@
-package com.eduardocastro.ecom_application.domain.model;
+package com.eduardocastro.ecom_application.domain.entity;
 
 import com.eduardocastro.ecom_application.domain.exception.InvalidUserDataException;
 
@@ -7,19 +7,11 @@ import java.util.UUID;
 
 public class User {
 
-    // =========================
-    // Attributes
-    // =========================
-
     private final UUID id;
     private String firstName;
     private String lastName;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-
-    // =========================
-    // Constructor
-    // =========================
 
     private User(UUID id, String firstName, String lastName, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
@@ -29,62 +21,39 @@ public class User {
         this.updatedAt = updatedAt;
     }
 
-    // =========================
-    // Factory Methods
-    // =========================
-
     public static User create(String firstName, String lastName) {
         validate(firstName, lastName);
-        return new User(
-                UUID.randomUUID(),
-                firstName,
-                lastName,
-                LocalDateTime.now(),
-                LocalDateTime.now()
-        );
+        return new User(UUID.randomUUID(), firstName, lastName, LocalDateTime.now(), LocalDateTime.now());
     }
 
-    public static User reconstitute(UUID id, String firstName, String lastName,  LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public static User reconstitute(UUID id, String firstName, String lastName, LocalDateTime createdAt, LocalDateTime updatedAt) {
         validate(firstName, lastName);
         validateReconstitution(id, createdAt, updatedAt);
         return new User(id, firstName, lastName, createdAt, updatedAt);
     }
 
-    // =========================
-    // Domain Behavior
-    // =========================
-
     public void update(String firstName, String lastName) {
         validate(firstName, lastName);
-
-        if (this.firstName.equals(firstName) && this.lastName.equals(lastName)) {
-            return;
-        }
-
+        if (this.firstName.equals(firstName) && this.lastName.equals(lastName)) return;
         this.firstName = firstName;
         this.lastName = lastName;
         touch();
     }
 
     private static void validate(String firstName, String lastName) {
-        if (firstName == null || firstName.isBlank()) {
+        if (firstName == null || firstName.isBlank())
             throw new InvalidUserDataException("First name cannot be null or blank");
-        }
-        if (lastName == null || lastName.isBlank()) {
+        if (lastName == null || lastName.isBlank())
             throw new InvalidUserDataException("Last name cannot be null or blank");
-        }
     }
 
     private static void validateReconstitution(UUID id, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        if (id == null) {
+        if (id == null)
             throw new InvalidUserDataException("Id cannot be null");
-        }
-        if (createdAt == null) {
+        if (createdAt == null)
             throw new InvalidUserDataException("createdAt cannot be null");
-        }
-        if (updatedAt != null && updatedAt.isBefore(createdAt)) {
+        if (updatedAt != null && updatedAt.isBefore(createdAt))
             throw new InvalidUserDataException("updatedAt cannot be before createdAt");
-        }
     }
 
     private void touch() {
@@ -95,18 +64,13 @@ public class User {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return id.equals(user.id);
+        return id.equals(((User) o).id);
     }
 
     @Override
     public int hashCode() {
         return id.hashCode();
     }
-
-    // =========================
-    // Getters
-    // =========================
 
     public UUID getId() { return id; }
     public String getFirstName() { return firstName; }

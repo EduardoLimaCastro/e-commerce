@@ -1,7 +1,11 @@
 package com.eduardocastro.ecom_application.infrastructure.web.controller;
 
-import com.eduardocastro.ecom_application.domain.model.User;
-import com.eduardocastro.ecom_application.application.service.UserService;
+import com.eduardocastro.ecom_application.application.usecase.CreateUserUseCase;
+import com.eduardocastro.ecom_application.application.usecase.GetUserByIdUseCase;
+import com.eduardocastro.ecom_application.application.usecase.ListUsersUseCase;
+import com.eduardocastro.ecom_application.application.usecase.UpdateUserUseCase;
+import com.eduardocastro.ecom_application.infrastructure.web.dto.request.CreateUserRequest;
+import com.eduardocastro.ecom_application.infrastructure.web.dto.response.UserResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,36 +19,33 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final UserService userService;
+    private final CreateUserUseCase createUserUseCase;
+    private final ListUsersUseCase listUsersUseCase;
+    private final GetUserByIdUseCase getUserByIdUseCase;
+    private final UpdateUserUseCase updateUserUseCase;
 
     @PostMapping
-    public ResponseEntity<User> create(@RequestBody User user) {
-        return new  ResponseEntity<>(userService.create(user), HttpStatus.CREATED);
+    public ResponseEntity<UserResponse> create(@RequestBody CreateUserRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(UserResponse.from(createUserUseCase.execute(request.firstName(), request.lastName())));
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> list() {
-        List<User> user = userService.list();
-        if(user == null){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(user, HttpStatus.OK);
+    public ResponseEntity<List<UserResponse>> list() {
+        return ResponseEntity.ok(listUsersUseCase.execute().stream().map(UserResponse::from).toList());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable UUID id) {
-        return userService.getById(id)
+    public ResponseEntity<UserResponse> getById(@PathVariable UUID id) {
+        return getUserByIdUseCase.execute(id)
+                .map(UserResponse::from)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> update(@PathVariable UUID id, @RequestBody User user) {
-        boolean updated = userService.update(id, user);
-        if (updated) {
-            return ResponseEntity.ok("user updated successfully");
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<Void> update(@PathVariable UUID id, @RequestBody CreateUserRequest request) {
+        boolean updated = updateUserUseCase.execute(id, request.firstName(), request.lastName());
+        return updated ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
     }
 }
