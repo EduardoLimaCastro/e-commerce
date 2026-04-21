@@ -11,7 +11,9 @@ public class UserJpaMapper {
         return new UserJpaEntity(
                 user.getId(),
                 user.getFirstName(),
-                user.getLastName()
+                user.getLastName(),
+                user.getCreatedAt(),
+                user.getUpdatedAt()
         );
     }
 
@@ -19,7 +21,9 @@ public class UserJpaMapper {
         return User.reconstitute(
                 entity.getId(),
                 entity.getFirstName(),
-                entity.getLastName()
+                entity.getLastName(),
+                entity.getCreatedAt(),
+                entity.getUpdatedAt()
         );
     }
 }

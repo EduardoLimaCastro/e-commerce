@@ -2,33 +2,68 @@ package com.eduardocastro.ecom_application.domain.model;
 
 import com.eduardocastro.ecom_application.domain.exception.InvalidUserDataException;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class User {
+
+    // =========================
+    // Attributes
+    // =========================
+
     private final UUID id;
     private String firstName;
     private String lastName;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
-    private User(UUID id, String firstName, String lastName) {
+    // =========================
+    // Constructor
+    // =========================
+
+    private User(UUID id, String firstName, String lastName, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
+
+    // =========================
+    // Factory Methods
+    // =========================
 
     public static User create(String firstName, String lastName) {
         validate(firstName, lastName);
-        return new User(UUID.randomUUID(), firstName, lastName);
+        return new User(
+                UUID.randomUUID(),
+                firstName,
+                lastName,
+                LocalDateTime.now(),
+                LocalDateTime.now()
+        );
     }
 
-    public static User reconstitute(UUID id, String firstName, String lastName) {
+    public static User reconstitute(UUID id, String firstName, String lastName,  LocalDateTime createdAt, LocalDateTime updatedAt) {
         validate(firstName, lastName);
-        return new User(id, firstName, lastName);
+        validateReconstitution(id, createdAt, updatedAt);
+        return new User(id, firstName, lastName, createdAt, updatedAt);
     }
+
+    // =========================
+    // Domain Behavior
+    // =========================
 
     public void update(String firstName, String lastName) {
         validate(firstName, lastName);
+
+        if (this.firstName.equals(firstName) && this.lastName.equals(lastName)) {
+            return;
+        }
+
         this.firstName = firstName;
         this.lastName = lastName;
+        touch();
     }
 
     private static void validate(String firstName, String lastName) {
@@ -38,6 +73,22 @@ public class User {
         if (lastName == null || lastName.isBlank()) {
             throw new InvalidUserDataException("Last name cannot be null or blank");
         }
+    }
+
+    private static void validateReconstitution(UUID id, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        if (id == null) {
+            throw new InvalidUserDataException("Id cannot be null");
+        }
+        if (createdAt == null) {
+            throw new InvalidUserDataException("createdAt cannot be null");
+        }
+        if (updatedAt != null && updatedAt.isBefore(createdAt)) {
+            throw new InvalidUserDataException("updatedAt cannot be before createdAt");
+        }
+    }
+
+    private void touch() {
+        this.updatedAt = LocalDateTime.now();
     }
 
     @Override
@@ -53,7 +104,13 @@ public class User {
         return id.hashCode();
     }
 
+    // =========================
+    // Getters
+    // =========================
+
     public UUID getId() { return id; }
     public String getFirstName() { return firstName; }
     public String getLastName() { return lastName; }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public LocalDateTime getUpdatedAt() { return updatedAt; }
 }
