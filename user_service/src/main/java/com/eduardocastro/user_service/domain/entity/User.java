@@ -5,6 +5,7 @@ import com.eduardocastro.user_service.domain.event.DomainEvent;
 import com.eduardocastro.user_service.domain.event.UserCreatedEvent;
 import com.eduardocastro.user_service.domain.event.UserUpdatedEvent;
 import com.eduardocastro.user_service.domain.exception.InvalidUserDataException;
+import com.eduardocastro.user_service.domain.valueobject.Address;
 import com.eduardocastro.user_service.domain.valueobject.Email;
 import com.eduardocastro.user_service.domain.valueobject.Phone;
 
@@ -21,45 +22,62 @@ public class User {
     private String lastName;
     private Email email;
     private Phone phone;
+    private Address address;
     private UserRole role;
     private final LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private final List<DomainEvent> domainEvents = new ArrayList<>();
 
-    private User(UUID id, String firstName, String lastName, Email email, Phone phone ,UserRole role, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    private User(UUID id, String firstName, String lastName, Email email, Phone phone, Address address, UserRole role, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.phone = phone;
+        this.address = address;
         this.role = role;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
 
-    public static User create(String firstName, String lastName,String phone ,String email, UserRole role) {
+    public static User create(String firstName, String lastName, String phone, String email, Address address, UserRole role) {
         validate(firstName, lastName);
         Email emailVO = new Email(email);
         Phone phoneVO = new Phone(phone);
         LocalDateTime now = LocalDateTime.now();
-        User user = new User(UUID.randomUUID(), firstName, lastName, emailVO, phoneVO,role, now, now);
-        user.domainEvents.add(new UserCreatedEvent(user.id, firstName, lastName, emailVO.getValue(), phoneVO.getValue(), role, now));
+        User user = new User(UUID.randomUUID(), firstName, lastName, emailVO, phoneVO, address, role, now, now);
+        user.domainEvents.add(new UserCreatedEvent(user.id, firstName, lastName, emailVO.getValue(), phoneVO.getValue(), address, role, now));
         return user;
     }
 
-    public static User reconstitute(UUID id, String firstName, String lastName, String phone, String email, UserRole role, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public static User reconstitute(UUID id, String firstName, String lastName, String phone, String email, Address address, UserRole role, LocalDateTime createdAt, LocalDateTime updatedAt) {
         validate(firstName, lastName);
         validateReconstitution(id, createdAt, updatedAt);
-        return new User(id, firstName, lastName, new Email(email), new Phone(phone), role, createdAt, updatedAt);
+        return new User(id, firstName, lastName, new Email(email), new Phone(phone), address, role, createdAt, updatedAt);
     }
 
-    public void update(String firstName, String lastName) {
+    public void update(String firstName, String lastName, String phone, String email, Address address, UserRole role) {
         validate(firstName, lastName);
-        if (this.firstName.equals(firstName) && this.lastName.equals(lastName)) return;
+        Email newEmail = new Email(email);
+        Phone newPhone = new Phone(phone);
+
+        boolean unchanged = this.firstName.equals(firstName)
+                && this.lastName.equals(lastName)
+                && this.phone.equals(newPhone)
+                && this.email.equals(newEmail)
+                && this.address.equals(address)
+                && this.role == role;
+
+        if (unchanged) return;
+
         this.firstName = firstName;
         this.lastName = lastName;
+        this.phone = newPhone;
+        this.email = newEmail;
+        this.address = address;
+        this.role = role;
         touch();
-        domainEvents.add(new UserUpdatedEvent(id, firstName, lastName, this.updatedAt));
+        domainEvents.add(new UserUpdatedEvent(id, firstName, lastName, newPhone.getValue(), newEmail.getValue(), address, role, this.updatedAt));
     }
 
     public List<DomainEvent> pullDomainEvents() {
@@ -103,6 +121,7 @@ public class User {
     public String getLastName() { return lastName; }
     public Email getEmail() { return email; }
     public Phone getPhone() { return phone; }
+    public Address getAddress() { return address; }
     public UserRole getRole() { return role; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public LocalDateTime getUpdatedAt() { return updatedAt; }

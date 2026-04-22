@@ -1,7 +1,9 @@
 package com.eduardocastro.user_service.application.interactor;
 
 import com.eduardocastro.user_service.application.usecase.UpdateUserUseCase;
+import com.eduardocastro.user_service.domain.enums.UserRole;
 import com.eduardocastro.user_service.domain.repository.UserRepository;
+import com.eduardocastro.user_service.domain.valueobject.Address;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -16,10 +18,10 @@ public class UpdateUserInteractor implements UpdateUserUseCase {
     private final ApplicationEventPublisher eventPublisher;
 
     @Override
-    public boolean execute(UUID id, String firstName, String lastName) {
+    public boolean execute(UUID id, String firstName, String lastName, String phone, String email, Address address, UserRole role) {
         return userRepository.findById(id)
                 .map(user -> {
-                    user.update(firstName, lastName);
+                    user.update(firstName, lastName, phone, email, address, role);
                     userRepository.save(user);
                     user.pullDomainEvents().forEach(eventPublisher::publishEvent);
                     return true;

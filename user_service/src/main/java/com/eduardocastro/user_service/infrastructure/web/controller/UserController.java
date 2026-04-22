@@ -4,6 +4,7 @@ import com.eduardocastro.user_service.application.usecase.CreateUserUseCase;
 import com.eduardocastro.user_service.application.usecase.GetUserByIdUseCase;
 import com.eduardocastro.user_service.application.usecase.ListUsersUseCase;
 import com.eduardocastro.user_service.application.usecase.UpdateUserUseCase;
+import com.eduardocastro.user_service.domain.valueobject.Address;
 import com.eduardocastro.user_service.infrastructure.web.dto.request.CreateUserRequest;
 import com.eduardocastro.user_service.infrastructure.web.dto.response.UserResponse;
 import lombok.RequiredArgsConstructor;
@@ -26,8 +27,17 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<UserResponse> create(@RequestBody CreateUserRequest request) {
+        Address address = new Address(
+                request.address().street(),
+                request.address().number(),
+                request.address().complement(),
+                request.address().neighborhood(),
+                request.address().city(),
+                request.address().state(),
+                request.address().zipCode()
+        );
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(UserResponse.from(createUserUseCase.execute(request.firstName(), request.lastName(), request.phone(), request.email(), request.role())));
+                .body(UserResponse.from(createUserUseCase.execute(request.firstName(), request.lastName(), request.phone(), request.email(), address, request.role())));
     }
 
     @GetMapping
@@ -45,7 +55,16 @@ public class UserController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> update(@PathVariable UUID id, @RequestBody CreateUserRequest request) {
-        boolean updated = updateUserUseCase.execute(id, request.firstName(), request.lastName());
+        Address address = new Address(
+                request.address().street(),
+                request.address().number(),
+                request.address().complement(),
+                request.address().neighborhood(),
+                request.address().city(),
+                request.address().state(),
+                request.address().zipCode()
+        );
+        boolean updated = updateUserUseCase.execute(id, request.firstName(), request.lastName(), request.phone(), request.email(), address, request.role());
         return updated ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
     }
 }

@@ -25,6 +25,9 @@ public class UserJpaEntity {
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
+    @Embedded
+    private AddressEmbeddable address;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private UserRole role;
@@ -37,12 +40,13 @@ public class UserJpaEntity {
 
     public UserJpaEntity() {}
 
-    public UserJpaEntity(UUID id, String firstName, String lastName, String phone, String email, UserRole role, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public UserJpaEntity(UUID id, String firstName, String lastName, String phone, String email, AddressEmbeddable address, UserRole role, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.phone = phone;
         this.email = email;
+        this.address = address;
         this.role = role;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -53,6 +57,7 @@ public class UserJpaEntity {
     public String getLastName() { return lastName; }
     public String getPhone() { return phone; }
     public String getEmail() { return email; }
+    public AddressEmbeddable getAddress() { return address; }
     public UserRole getRole() { return role; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public LocalDateTime getUpdatedAt() { return updatedAt; }

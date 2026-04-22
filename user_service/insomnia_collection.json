@@ -41,7 +41,7 @@
       ],
       "body": {
         "mimeType": "application/json",
-        "text": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"email\": \"john@example.com\",\n  \"role\": \"USER\"\n}"
+        "text": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"phone\": \"11987654321\",\n  \"email\": \"john@example.com\",\n  \"address\": {\n    \"street\": \"Rua das Flores\",\n    \"number\": \"123\",\n    \"complement\": \"Apto 4\",\n    \"neighborhood\": \"Centro\",\n    \"city\": \"São Paulo\",\n    \"state\": \"SP\",\n    \"zipCode\": \"01310100\"\n  },\n  \"role\": \"USER\"\n}"
       }
     },
     {
@@ -79,7 +79,7 @@
       ],
       "body": {
         "mimeType": "application/json",
-        "text": "{\n  \"firstName\": \"Jane\",\n  \"lastName\": \"Smith\"\n}"
+        "text": "{\n  \"firstName\": \"Jane\",\n  \"lastName\": \"Smith\",\n  \"phone\": \"11911112222\",\n  \"email\": \"jane@example.com\",\n  \"address\": {\n    \"street\": \"Av. Paulista\",\n    \"number\": \"1000\",\n    \"complement\": null,\n    \"neighborhood\": \"Bela Vista\",\n    \"city\": \"São Paulo\",\n    \"state\": \"SP\",\n    \"zipCode\": \"01310100\"\n  },\n  \"role\": \"ADMIN\"\n}"
       }
     }
   ]
