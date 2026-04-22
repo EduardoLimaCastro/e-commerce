@@ -41,7 +41,7 @@
       ],
       "body": {
         "mimeType": "application/json",
-        "text": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\"\n}"
+        "text": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"email\": \"john@example.com\",\n  \"role\": \"USER\"\n}"
       }
     },
     {

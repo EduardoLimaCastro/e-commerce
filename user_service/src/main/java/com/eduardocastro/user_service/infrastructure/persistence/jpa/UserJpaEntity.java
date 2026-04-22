@@ -1,9 +1,7 @@
 package com.eduardocastro.user_service.infrastructure.persistence.jpa;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.eduardocastro.user_service.domain.enums.UserRole;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -21,6 +19,16 @@ public class UserJpaEntity {
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
+    @Column(name = "phone", nullable = false)
+    private String phone;
+
+    @Column(name = "email", nullable = false, unique = true)
+    private String email;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false)
+    private UserRole role;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
@@ -29,10 +37,13 @@ public class UserJpaEntity {
 
     public UserJpaEntity() {}
 
-    public UserJpaEntity(UUID id, String firstName, String lastName, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public UserJpaEntity(UUID id, String firstName, String lastName, String phone, String email, UserRole role, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.phone = phone;
+        this.email = email;
+        this.role = role;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -40,6 +51,9 @@ public class UserJpaEntity {
     public UUID getId() { return id; }
     public String getFirstName() { return firstName; }
     public String getLastName() { return lastName; }
+    public String getPhone() { return phone; }
+    public String getEmail() { return email; }
+    public UserRole getRole() { return role; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public LocalDateTime getUpdatedAt() { return updatedAt; }
 }

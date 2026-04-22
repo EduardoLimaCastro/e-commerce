@@ -12,6 +12,9 @@ public class UserJpaMapper {
                 user.getId(),
                 user.getFirstName(),
                 user.getLastName(),
+                user.getPhone().getValue(),
+                user.getEmail().getValue(),
+                user.getRole(),
                 user.getCreatedAt(),
                 user.getUpdatedAt()
         );
@@ -22,6 +25,9 @@ public class UserJpaMapper {
                 entity.getId(),
                 entity.getFirstName(),
                 entity.getLastName(),
+                entity.getPhone(),
+                entity.getEmail(),
+                entity.getRole(),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt()
         );
